@@ -84,8 +84,6 @@ end
 local Discord = Instance.new("ScreenGui")
 Discord.Name = "Discord"
 Discord.Parent = game:GetService("CoreGui")
--- Discord.Parent = game.CoreGui
--- Discord.Parent = game.Players.LocalPlayer.PlayerGui
 Discord.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 function DiscordLib:Window(text)
@@ -2770,8 +2768,14 @@ function DiscordLib:Window(text)
 						framesize = 29
 					elseif itemcount == 2 then
 						framesize = 58
-					elseif itemcount >= 3 then
+					elseif itemcount == 3 then
 						framesize = 87
+					elseif itemcount == 4 then
+						framesize = 116
+					elseif itemcount == 5 then
+						framesize = 145
+					elseif itemcount >= 6 then
+						framesize = 174
 					end
 
 					local Item = Instance.new("TextButton")
