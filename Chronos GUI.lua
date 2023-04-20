@@ -1,4 +1,4 @@
-local versionx = "0.71"
+local versionx = "0.8.0"
 
 --[[
 Chams
@@ -92,6 +92,37 @@ end)
 function getRoot(char)
 	local rootPart = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
 	return rootPart
+end
+
+local targetuser
+local playertable = {}
+local displaytable = {}
+local playerdisplay = {}
+local friendimage = "rbxasset://LuaPackages/Packages/_Index/UIBlox/UIBlox/App/ImageSet/ImageAtlas/img_set_1x_7.png"
+
+function UpdateTeleport()
+    playertable = {}
+    displaytable = {}
+    playerdisplay = {}
+
+    for i,v in pairs(game:GetService("Players"):GetDescendants()) do
+        if v:IsA("Player") and v.Name ~= game:GetService("Players").LocalPlayer.Name then
+            if tostring(game:GetService("CoreGui"):WaitForChild("PlayerList"):WaitForChild("PlayerListMaster"):WaitForChild("OffsetFrame"):WaitForChild("PlayerScrollList"):WaitForChild("SizeOffsetFrame"):WaitForChild("ScrollingFrameContainer"):WaitForChild("ScrollingFrameClippingFrame"):WaitForChild("ScollingFrame"):WaitForChild("OffsetUndoFrame"):WaitForChild("p_"..v.UserId):WaitForChild("ChildrenFrame"):WaitForChild("NameFrame"):WaitForChild("BGFrame"):WaitForChild("OverlayFrame"):WaitForChild("PlayerIcon").Image)
+            == friendimage then
+                playertable[#playertable+1] = v.Name
+                displaytable[#displaytable+1] = v.DisplayName
+                playerdisplay[#playerdisplay+1] = "["..v.Name.."] "..v.DisplayName
+            end
+        end
+
+        if v:IsA("Player") and v.Name ~= game:GetService("Players").LocalPlayer.Name then
+            if not table.find(playertable, v.Name) then
+                playertable[#playertable+1] = v.Name
+                displaytable[#displaytable+1] = v.DisplayName
+                playerdisplay[#playerdisplay+1] = "["..v.Name.."] "..v.DisplayName
+            end
+        end
+    end
 end
 
 local enableflight
@@ -1281,19 +1312,7 @@ localtab:Button("Normal Walkspeed + Jump Power", function()
 end)
 
 -- Teleporter
-local playertable = {}
-local displaytable = {}
-local playerdisplay = {}
--- local friendfirst = {}
-local targetuser
-
-for i,v in pairs(game:GetService("Players"):GetDescendants()) do
-   if v:IsA("Player") and v.Name ~= game:GetService("Players").LocalPlayer.Name then
-       playertable[#playertable+1] = v.Name
-       displaytable[#displaytable+1] = v.DisplayName
-       playerdisplay[#playerdisplay+1] = "["..v.Name.."] "..v.DisplayName
-   end
-end
+UpdateTeleport()
 
 local tptarget = teleporttab:Dropdown(("Target User:                                                                      ["..#playerdisplay.."]"), playerdisplay, "Select a target", function(target)
     targetuser = target
@@ -1308,6 +1327,15 @@ teleporttab:Button("Teleport", function()
     end
 end)
 
+teleporttab:Button("Refresh List", function()
+    print("Updating Teleport Dropdown")
+    tptarget:Clear()
+    UpdateTeleport()
+    for z=1, #playerdisplay, 1 do
+        tptarget:Add(playerdisplay[z])
+    end
+end)
+    
 local enabletp = false
 
 teleporttab:Toggle(("Enable Key TP: Press \""..bindtp.."\" to Teleport to Player"), false, function(toggle)
